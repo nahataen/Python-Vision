@@ -26,8 +26,8 @@ image-classifier-vision-api/
 ## Cómo correr
 
 ```bash
-git clone https://github.com/nahataen/image-classifier-vision-api.git
-cd image-classifier-vision-api
+git clone https://github.com/nahataen/Python-Vision.git
+cd Python-Vision
 pip install -r requirements.txt
 ```
 
