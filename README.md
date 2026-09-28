@@ -1,89 +1,47 @@
+# 🖼️ Clasificador de imágenes con Google Vision
 
-<!-- Título del Proyecto -->
-<h1 align="center">Clasificador de Imágenes con Google Cloud Vision y Gradio</h1>
+> Sube imágenes en una interfaz Gradio, las etiqueta con Google Cloud Vision API y las archiva en carpetas por categoría.
 
-<!-- Descripción Breve -->
-<p align="center">Una aplicación para clasificar imágenes en categorías usando Google Cloud Vision API y Gradio.</p>
+## Qué hace
 
-<!-- Badges -->
-<p align="center">
-    <img src="https://img.shields.io/badge/Python-3.7%2B-blue">
-    <img src="https://img.shields.io/badge/Gradio-2.0.0-green">
-    <img src="https://img.shields.io/badge/Google%20Cloud%20Vision-API-yellow">
-</p>
+El archivo `app` (código Python de 103 líneas, sin extensión `.py`) usa `google.cloud.vision.ImageAnnotatorClient.label_detection` y reglas por palabras clave sobre las etiquetas para clasificar cada imagen en: `Anime`, `Memes`, `Screenshots de YouTube`, `Educativo` o `No se pudo clasificar`. La interfaz `gr.Blocks` (`gradio_interface`) acepta múltiples archivos, muestra clasificación + etiquetas con confianza y mueve cada imagen con `shutil.move` a la carpeta de su categoría (las crea con `create_folders()`).
 
-<!-- Tabla de Contenidos -->
-## Tabla de Contenidos
-- [Descripción](#descripción)
-- [Demo](#demo)
-- [Requisitos](#requisitos)
-- [Instalación](#instalación)
-- [Uso](#uso)
-- [Estructura del Proyecto](#estructura-del-proyecto)
-- [Contribución](#contribución)
-- [Créditos](#créditos)
-- [Licencia](#licencia)
+## Estructura
 
-<!-- Descripción -->
-## Descripción
-Este proyecto utiliza la API de Google Cloud Vision para clasificar imágenes en varias categorías como Anime, Memes, Screenshots de YouTube, o Educativo. Utiliza Gradio para crear una interfaz amigable donde los usuarios pueden cargar múltiples imágenes y obtener la clasificación junto con las etiquetas detectadas.
+```text
+image-classifier-vision-api/
+├── app               # Código principal (Python, 103 líneas: classify_image,
+│                     # gradio_interface, interfaz gr.Blocks + interface.launch())
+├── requirements.txt  # Dependencias fijadas (gradio 4.36.1, google-cloud-vision 3.7.2,
+│                     # fastapi, uvicorn, tensorflow, pillow, etc.)
+└── README.md         # Este archivo
+```
 
-<!-- Demo -->
-## Demo
-Inserta una captura de pantalla o un gif animado que muestre la interfaz en acción.
-
-<!-- Requisitos -->
 ## Requisitos
-- Python 3.7 o superior
-- Google Cloud SDK configurado con credenciales válidas para Cloud Vision API
-- Instalación de las bibliotecas requeridas: `google-cloud-vision`, `gradio`
 
-<!-- Instalación -->
-## Instalación
-1. Clona este repositorio.
-2. Instala las dependencias necesarias:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Configura las credenciales de Google Cloud Vision API según se describe en la sección [Configuración](#configuración).
+- Python 3.7+
+- Cuenta de Google Cloud con Vision API habilitada y un JSON de credenciales de cuenta de servicio
+- Dependencias mínimas reales del código: `google-cloud-vision`, `gradio` (el `requirements.txt` fija además fastapi, tensorflow, pillow y otras transitivas)
 
-<!-- Uso -->
-## Uso
-1. Ejecuta la aplicación:
-   ```bash
-   python app.py
-   ```
-2. Abre el navegador y navega a la URL proporcionada por Gradio.
-3. Sube una o más imágenes para ver la clasificación automática.
+## Cómo correr
 
-<!-- Estructura del Proyecto -->
-## Estructura del Proyecto
-```
-proyecto/
-│
-├── app.py            # Código principal de la aplicación
-├── README.md         # Este archivo
-├── requirements.txt  # Lista de dependencias del proyecto
-└── ...
+```bash
+git clone https://github.com/nahataen/image-classifier-vision-api.git
+cd image-classifier-vision-api
+pip install -r requirements.txt
 ```
 
-<!-- Contribución -->
-## Contribución
-Las contribuciones son bienvenidas. Para cambios importantes, abre primero un problema para discutir lo que te gustaría cambiar.
+1. Edita la línea 8 de `app` y pon la ruta real de tu JSON de credenciales en `GOOGLE_APPLICATION_CREDENTIALS` (el valor actual es solo un texto de ejemplo).
+2. Ejecuta el archivo (hay que indicar el intérprete porque no lleva extensión `.py`):
 
-1. Fork el repositorio
-2. Crea tu rama de características (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -am 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+```bash
+python app
+```
 
-<!-- Créditos -->
-## Créditos
-- Desarrollado por [Jesus Nahataen]
-- Basado en la documentación de [Google Cloud Vision](https://cloud.google.com/vision)
-- Utiliza [Gradio](https://gradio.app/) para la interfaz de usuario
+3. Abre la URL que imprime Gradio, sube imágenes y pulsa **Clasificar**. Cada imagen se mueve a `Anime/`, `Memes/`, `Screenshots de YouTube/`, `Educativo/` o `No se pudo clasificar/`.
 
-<!-- Licencia -->
-## Licencia
-Open-source 
+## Notas
 
+- El archivo principal se llama `app` sin extensión; renombrarlo a `app.py` no cambia su funcionamiento y facilita abrirlo en editores.
+- Las reglas de clasificación son heurísticas por palabras clave en inglés (p. ej. `anime`, `fanart`, `meme`, `screenshot`, `infographic`); no es un modelo entrenado en este repo.
+- Cada ejecución mueve físicamente los archivos subidos; usa copias de prueba.
